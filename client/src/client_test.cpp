@@ -12,17 +12,21 @@ int main ( int argc, char* argv[] )
 
       std::string reply;
 	/*We send the string "Test Message." to the server, read the response from the server, and print out the response to std output.*/
-      try
-	{
-	  client_socket << "Test message.";
-	  client_socket >> reply;
+      while (1)
+	  {
+	  
+		try
+		{
+			client_socket << "Test message.";
+			client_socket >> reply;
+		}
+		catch ( SocketException& ) {}
+
+
+		std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
+
+		}
 	}
-      catch ( SocketException& ) {}
-
-
-      std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
-
-    }
   catch ( SocketException& e )
     {
       std::cout << "Exception was caught:" << e.description() << "\n";
