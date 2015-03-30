@@ -7,8 +7,8 @@ int main ( int argc, char* argv[] )
 {
 	try
 	{
-		/*Create the client socket*/
-      ClientSocket client_socket ( "localhost", 30000 );
+	/*Create the client socket*/
+      ClientSocket client_socket ("localhost", 3001);
 
       std::string reply;
 	/*We send the string "Test Message." to the server, read the response from the server, and print out the response to std output.*/
@@ -21,10 +21,7 @@ int main ( int argc, char* argv[] )
 			client_socket >> reply;
 		}
 		catch ( SocketException& ) {}
-
-
-		std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
-
+			std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
 		}
 	}
   catch ( SocketException& e )

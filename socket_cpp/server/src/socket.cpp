@@ -6,48 +6,34 @@
 #include <errno.h>
 #include <fcntl.h>
 
-Socket::Socket() :
-  m_sock ( -1 )
+Socket::Socket():m_sock(-1)
 {
-
-  memset ( &m_addr,
-	   0,
-	   sizeof ( m_addr ) );
-
+	memset(&m_addr, 0, sizeof(m_addr));
 }
 
 Socket::~Socket()
 {
-  if ( is_valid() )
-    ::close ( m_sock );
+	if (is_valid())
+		::close(m_sock);
 }
 
 bool Socket::create()
 {
-  m_sock = socket ( AF_INET,
-		    SOCK_STREAM,
-		    0 );
+	m_sock = socket (AF_INET, SOCK_STREAM, 0);
 
-  if ( ! is_valid() )
-    return false;
+	if (!is_valid())
+		return false;
+  	// TIME_WAIT - argh
+	int on = 1;
+	if ( setsockopt (m_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* )&on, sizeof ( on ) ) == -1)
+		return false;
 
-
-  // TIME_WAIT - argh
-  int on = 1;
-  if ( setsockopt ( m_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &on, sizeof ( on ) ) == -1 )
-    return false;
-
-
-  return true;
-
+	return true;
 }
 
-
-
-bool Socket::bind ( const int port )
+bool Socket::bind(const int port)
 {
-
-  if ( ! is_valid() )
+	if (!is_valid())
     {
       return false;
     }
@@ -91,21 +77,21 @@ bool Socket::listen() const
 }
 
 
-bool Socket::accept ( Socket& new_socket ) const
+bool Socket::accept(Socket& new_socket) const
 {
-  int addr_length = sizeof ( m_addr );
-  new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
+  int addr_length = sizeof(m_addr);
+  new_socket.m_sock = ::accept (m_sock, (sockaddr *)&m_addr, (socklen_t *)&addr_length);
 
-  if ( new_socket.m_sock <= 0 )
+  if (new_socket.m_sock <= 0)
     return false;
   else
     return true;
 }
 
 
-bool Socket::send ( const std::string s ) const
+bool Socket::send(const std::string s)const
 {
-  int status = ::send ( m_sock, s.c_str(), s.size(), MSG_NOSIGNAL );
+  int status = ::send(m_sock, s.c_str(), s.size(), MSG_NOSIGNAL);
   if ( status == -1 )
     {
       return false;

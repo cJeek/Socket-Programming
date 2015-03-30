@@ -7,77 +7,58 @@
 #include <errno.h>
 #include <fcntl.h>
 
-
-
-Socket::Socket() :
-  m_sock ( -1 )
+Socket::Socket():m_sock(-1)
 {
-
-  memset ( &m_addr,
-	   0,
-	   sizeof ( m_addr ) );
-
+	memset(&m_addr, 0, sizeof(m_addr));
 }
 
 Socket::~Socket()
 {
-  if ( is_valid() )
-    ::close ( m_sock );
+	if (is_valid())
+		::close (m_sock);
 }
 
 bool Socket::create()
 {
-  m_sock = socket ( AF_INET,
-		    SOCK_STREAM,
-		    0 );
+	//int socket(int domain, int type, int protocol);
+	m_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if(!is_valid())
+    	return false;
+	
+	// TIME_WAIT - argh
+	int on = 1;
+	//static int setsockopt(struct socket *sock,int lvl, int opt, char __user *ov, unsigned int ol);
+	if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on)) == -1)
+		return false;
 
-  if ( ! is_valid() )
-    return false;
-
-
-  // TIME_WAIT - argh
-  int on = 1;
-  if ( setsockopt ( m_sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &on, sizeof ( on ) ) == -1 )
-    return false;
-
-
-  return true;
-
+	return true;
 }
 
 
 
-bool Socket::bind ( const int port )
+bool Socket::bind(const int port)
 {
-
-  if ( ! is_valid() )
+	if (!is_valid())
     {
-      return false;
+    	return false;
     }
+	m_addr.sin_family = AF_INET;
+	m_addr.sin_addr.s_addr = INADDR_ANY;
+	m_addr.sin_port = htons (port);
+
+ 	int bind_return = ::bind (m_sock, (struct sockaddr *)&m_addr, sizeof(m_addr));
 
 
+	if (bind_return == -1)
+    	return false;
 
-  m_addr.sin_family = AF_INET;
-  m_addr.sin_addr.s_addr = INADDR_ANY;
-  m_addr.sin_port = htons ( port );
-
-  int bind_return = ::bind ( m_sock,
-			     ( struct sockaddr * ) &m_addr,
-			     sizeof ( m_addr ) );
-
-
-  if ( bind_return == -1 )
-    {
-      return false;
-    }
-
-  return true;
+	return true;
 }
 
 
 bool Socket::listen() const
 {
-  if ( ! is_valid() )
+	if (!is_valid())
     {
       return false;
     }
@@ -99,7 +80,7 @@ bool Socket::accept ( Socket& new_socket ) const
   int addr_length = sizeof ( m_addr );
   new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
 
-  if ( new_socket.m_sock <= 0 )
+  if (new_socket.m_sock <= 0)
     return false;
   else
     return true;
@@ -185,7 +166,6 @@ void Socket::set_non_blocking ( const bool b )
   else
     opts = ( opts & ~O_NONBLOCK );
 
-  fcntl ( m_sock,
-	  F_SETFL,opts );
+	fcntl(m_sock, F_SETFL, opts);
 
 }

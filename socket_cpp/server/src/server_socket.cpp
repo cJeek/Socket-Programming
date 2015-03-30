@@ -2,9 +2,9 @@
 
 #include "server_socket.h"
 #include "socket_exception.h"
+using namespace std;
 
-
-ServerSocket::ServerSocket ( int port )
+ServerSocket::ServerSocket(int port)
 {
   if ( ! Socket::create() )
     {
@@ -13,6 +13,7 @@ ServerSocket::ServerSocket ( int port )
 
   if ( ! Socket::bind ( port ) )
     {
+    	cout << port <<endl;
       throw SocketException ( "Could not bind to port." );
     }
 
@@ -30,24 +31,23 @@ ServerSocket::~ServerSocket()
 
 const ServerSocket& ServerSocket::operator << ( const std::string& s ) const
 {
-  if ( ! Socket::send ( s ) )
+	if(!Socket::send(s))
     {
-      throw SocketException ( "Could not write to socket." );
+      	throw SocketException("Could not write to socket.");
     }
 
-  return *this;
-
+	return *this;
 }
 
 
 const ServerSocket& ServerSocket::operator >> ( std::string& s ) const
 {
-  if ( ! Socket::recv ( s ) )
+	if (!Socket::recv(s))
     {
-      throw SocketException ( "Could not read from socket." );
+    	throw SocketException ( "Could not read from socket." );
     }
 
-  return *this;
+  	return *this;
 }
 
 void ServerSocket::accept ( ServerSocket& sock )
