@@ -4,12 +4,12 @@
 #define ServerSocket_class
 
 #include "socket.h"
+#include <pthread.h>
 
 
 class ServerSocket : private Socket
 {
  public:
-
   ServerSocket ( int port );
   ServerSocket (){};
   virtual ~ServerSocket();
@@ -18,6 +18,7 @@ class ServerSocket : private Socket
   const ServerSocket& operator >> ( std::string& ) const;
 
   void accept ( ServerSocket& );
+  void create_thread_pool();
 
 };
 

@@ -34,7 +34,7 @@ struct FilePackage
 
 
 /*´ò°üº¯Êý*/
-struct FilePackage pack(char tCmd, char* tBuf, char* tFilename, int tFilesize, int tAck,int count,char *uname)
+struct FilePackage pack(char tCmd, char* tBuf, char* tFilename, int tFilesize, int tAck, int count, char *uname)
 {
 	struct FilePackage tPackage;
 	tPackage.cmd = tCmd;

@@ -75,33 +75,33 @@ bool Socket::listen() const
 }
 
 
-bool Socket::accept ( Socket& new_socket ) const
+bool Socket::accept(Socket& new_socket) const
 {
-  int addr_length = sizeof ( m_addr );
-  new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
+	int addr_length = sizeof(m_addr);
+	new_socket.m_sock = ::accept(m_sock, ( sockaddr * ) &m_addr, (socklen_t *)&addr_length);
 
-  if (new_socket.m_sock <= 0)
-    return false;
-  else
-    return true;
+	if (new_socket.m_sock <= 0)
+    	return false;
+  	else
+    	return true;
 }
 
 
-bool Socket::send ( const std::string s ) const
+bool Socket::send(const std::string s) const
 {
-  int status = ::send ( m_sock, s.c_str(), s.size(), MSG_NOSIGNAL );
-  if ( status == -1 )
+	int status = ::send(m_sock, s.c_str(), s.size(), MSG_NOSIGNAL);
+	if ( status == -1 )
     {
-      return false;
+    	return false;
     }
-  else
+  	else
     {
-      return true;
+      	return true;
     }
 }
 
 
-int Socket::recv ( std::string& s ) const
+int Socket::recv(std::string& s) const
 {
   char buf [ MAXRECV + 1 ];
 

@@ -19,12 +19,13 @@ int main ( int argc, char* argv[] )
 		{
 			client_socket << "Test message.";
 			client_socket >> reply;
+			//break;
 		}
 		catch ( SocketException& ) {}
 			std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
 		}
 	}
-  catch ( SocketException& e )
+  	catch ( SocketException& e )
     {
       std::cout << "Exception was caught:" << e.description() << "\n";
     }

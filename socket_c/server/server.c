@@ -148,7 +148,10 @@ int main(int argc, char *argv[])
 			memset(AN,'\0',20);
 		}
 	}//while结束
-	
+
+
+
+
 	if((pthread_create(&controlId,NULL,(void *)mainMenu,NULL)) != 0)
 	{
 		printf("\033[33mCreate menu error!\033[0m\n");		
@@ -161,6 +164,8 @@ int main(int argc, char *argv[])
 	
 	pthread_join(controlId,NULL);
 	pthread_join(mainId,NULL);
+
+
 	
 	return 0;
 }
@@ -328,7 +333,7 @@ void mainMenu()
 			
 			case 2:						/*运行服务器*/
 				{
-					IsRun=1;
+					IsRun = 1;
 					printf("\n\033[32mserver is running now\033[0m\n\n");
 					break;
 				}
@@ -496,7 +501,6 @@ void mainThread()
 //			}
 //			 MoveToBusy(ThreadIdleId[]);
 			 pthread_cond_signal(&pthreadCond);
-//  		printf("11111111111111111111111111\n");		  
 		}		
 	}
 		close(sockfd);
@@ -509,9 +513,9 @@ void mainThread()
 void process()
 {
 //	SSL *NewFd=ssl;
-
-tap:  		pthread_mutex_lock(&pthreadMutex);
-  		pthread_cond_wait(&pthreadCond,&pthreadMutex);
+tap:
+	pthread_mutex_lock(&pthreadMutex);
+  		pthread_cond_wait(&pthreadCond, &pthreadMutex);
   		pthread_mutex_unlock(&pthreadMutex);
   int new_fd=tempsockfd;
 	struct FilePackage sendPackage;
@@ -662,11 +666,8 @@ struct FilePackage unpack(SSL *NewFd,struct FilePackage tpack)
 			{
 
 			  strcat(pfilename,tpack.username);
-//			  printf("111111111111111111%s\n",userdir);
 				strcat(pfilename,"/");
 				strcat(pfilename,tpack.filename);
-//				printf("22222222222222222222%s\n",pfilename);
-//				printf("%s\n",pfilename);
 				filesize=tpack.filesize;
 				/*文件名已经存在以后实现*/
 				statfs("./",&statfsbuf);
